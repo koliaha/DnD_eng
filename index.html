@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <script src="assets/jquery.min.js"></script>
+  <script src="assets/jquery-ui.min.js"></script>
+  <script src="assets/jquery.ui.touch-punch.min.js"></script>
+  <script src="assets/animate.min.css"></script> 
+  <link rel="stylesheet" href="assets/animate.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"/>
+    <link rel="stylesheet" href="style.css">
+    <title>Drag & Drop</title>
+
+</head>
+<body>
+<div class="bg" >
+    <img src="./img/3_slide.png" alt="pizza ingridients" class="ingridients animate__animated" id="ingridients">
+    <img src="./img/4_slide.png" alt="More pizza" class="final_slide animate__animated" id="final_slide">
+    <h1 class="header_cta">Put pizza together</h1>
+    <p class="paragraph_cta">and get a gift!</p>
+    <h1 class="header_grats animate__animated" id="header_grats">Congratulations,</h1>
+    <p class="paragraph_grats animate__animated" id="paragraph_grats">you did it!</p>
+    <div class="pan_block">
+        <img  src="./img/Ellipse.svg" alt="ellipse" class="ellipse">
+        <img src="./img/pan_empty_1.svg" alt="Empty pan" class="pan_empty">
+        <img src="./img/pan_full.svg" alt="Full pizza" class="pan_full animate__animated" id="pan_full">
+    </div>
+    <div class="piece_block">
+        <img src="./img/empty_pieces.svg" alt="Place for pieces" class="pieces_empty">
+        <img src="./img/1.png" alt="piece of pizza" class="piece0 piece">
+        <img src="./img/2.png" alt="piece of pizza" class="piece1 piece">
+        <img src="./img/3.png" alt="piece of pizza" class="piece2 piece">
+        <img src="./img/4.png" alt="piece of pizza" class="piece3 piece">
+        <img src="./img/5.png" alt="piece of pizza" class="piece4 piece">
+        <img src="./img/6.png" alt="piece of pizza" class="piece5 piece">
+    </div>
+    <div id="promocode_block" class="promocode_block animate__animated">
+        <img src="./img/Ellipse.svg" alt="Bright ellipse with gradient" class="eclipse">
+        <h1 class="header_promo">Catch the promo code</h1>
+        <div class="promocode">PUZZLE</div>
+        <p class="paragraph_promo">for a discount of</p>
+        <p class="paragraph_discount">-60%*</p>
+        <p class="paragraph_rules">*for «four-cheese pizza»</p>
+    </div>
+</div>
+    <script>
+        var piece0 = document.getElementsByClassName("piece0")[0];
+        var piece1 = document.getElementsByClassName("piece1")[0];
+        var piece2 = document.getElementsByClassName("piece2")[0];
+        var piece3 = document.getElementsByClassName("piece3")[0];
+        var piece4 = document.getElementsByClassName("piece4")[0];
+        var piece5 = document.getElementsByClassName("piece5")[0];
+        let place0 = false;
+        let place1 = false;
+        let place2 = false;
+        let place3 = false;
+        let place4 = false;
+        let place5 = false;
+        var right_arrow = document.getElementsByClassName("right")[0];
+        var left_arrow = document.getElementsByClassName("left")[0];
+
+
+        // $('.piece0').draggable();
+
+        //show fourth frame
+        function finalFrame(){
+            $('.promocode_block')[0].style.visibility = "visible";
+            $('#promocode_block').addClass("animate__fadeIn animate__delay-5s");
+            $('.final_slide')[0].style.visibility = "visible";
+            $('#final_slide').addClass("animate__fadeIn animate__delay-5s");
+        }
+        //show third frame
+        function gratsFrame() {
+            $('.header_grats')[0].style.visibility = "visible";
+            $('#header_grats').addClass("animate__fadeIn animate__delay-1s");
+            $('.paragraph_grats')[0].style.visibility = "visible";
+            $('#paragraph_grats').addClass("animate__fadeIn animate__delay-1s");
+            $('.ingridients')[0].style.visibility = "visible";
+            $('#ingridients').addClass("animate__fadeIn animate__delay-1s");
+            $('.pan_full')[0].style.visibility = "visible";
+            $('#pan_full').addClass("animate__fadeIn animate__delay-1s");
+        }
+        //hide third frame
+        function hideGrats() {
+            $('#header_grats').addClass("animate__fadeOut animate__delay-4s");
+            $('#paragraph_grats').addClass("animate__fadeOut animate__delay-4s");
+            $('#ingridients').addClass("animate__fadeOut animate__delay-4s");
+            $('#pan_full').addClass("animate__fadeOut animate__delay-4s");
+        }
+        //hide second frame
+        function hidePuzzle() {
+            $('.piece_block')[0].style.visibility = "hidden";
+            $('.header_cta')[0].style.visibility = "hidden";
+            $('.paragraph_cta')[0].style.visibility = "hidden";
+            $('.pan_empty')[0].style.visibility = "hidden";
+        }
+        // check pieces on places
+        function checkPlaces() {
+        if (place0 === true && place1 === true && place2 === true && place3 === true && place4 === true && place5 === true) {
+            console.log("YAY!!!");
+            hidePuzzle();
+            gratsFrame();
+            hideGrats();
+            finalFrame();
+        }
+        //switch to third screen
+
+
+        }
+        // detect mouse click
+        piece0.onmousedown = function(event) {
+            // calculate shift of drag point
+            let shiftX = event.clientX - piece0.getBoundingClientRect().left;
+            let shiftY = event.clientY - piece0.getBoundingClientRect().top;
+
+            // prepare to drag object
+            piece0.style.zIndex = 1000;
+
+            // set object under cursor
+            moveAt(event.pageX, event.pageY);
+
+            // move object on half width and half height for centering
+            function moveAt(pageX, pageY) {
+                piece0.style.left = pageX - shiftX + "px";
+                piece0.style.top = pageY - shiftY + "px";
+            }
+
+            function onMouseMove(event) {
+                moveAt(event.pageX, event.pageY);
+                if ( $(piece0).position().left < 180 
+                && $(piece0).position().left > 130
+                 && $(piece0).position().top < 220 
+                 && $(piece0).position().top >180 ) {
+                    piece0.style.top = 44.68 + "vw";
+                    piece0.style.left = 34.91 + "vw";
+                    piece0.style.width = 39  + "vw";
+                    place0 = true;
+                    document.removeEventListener("mousemove", onMouseMove);
+                    // console.log (place0);
+            }
+            }
+
+            // drag on the screen by mouse
+            document.addEventListener("mousemove", onMouseMove);
+            // drop object and remove event listeners
+            piece0.onmouseup = function() {
+                checkPlaces();
+
+                document.removeEventListener("mousemove", onMouseMove);
+                piece0.onmouseup = null;
+            }
+            console.log($(piece0).position());
+
+        }
+
+        // remove default browser's drag listener
+        piece0.ondragstart = function() {
+            return false;
+        };
+        piece1.onmousedown = function(event) {
+            // calculate shift of drag point
+            let shiftX = event.clientX - piece1.getBoundingClientRect().left;
+            let shiftY = event.clientY - piece1.getBoundingClientRect().top;
+
+            // prepare to drag object
+            piece1.style.zIndex = 1000;
+
+            // set object under cursor
+            moveAt(event.pageX, event.pageY);
+
+            // move object on half width and half height for centering
+            function moveAt(pageX, pageY) {
+                piece1.style.left = pageX - shiftX + "px";
+                piece1.style.top = pageY - shiftY + "px";
+            }
+
+            function onMouseMove(event) {
+                moveAt(event.pageX, event.pageY);
+                if ( $(piece1).position().left < 220 
+                && $(piece1).position().left > 170
+                 && $(piece1).position().top < 235 
+                 && $(piece1).position().top > 195 ) {
+                    piece1.style.top = 52.17 + "vw";
+                    piece1.style.left = 46.73 + "vw";
+                    piece1.style.width = 39  + "vw";
+                    place1 = true;
+                    document.removeEventListener("mousemove", onMouseMove);
+                    // console.log (place1);
+
+
+            }
+            }
+
+            // drag on the screen by mouse
+            document.addEventListener("mousemove", onMouseMove);
+            // drop object and remove event listeners
+            piece1.onmouseup = function() {
+                checkPlaces();
+
+                document.removeEventListener("mousemove", onMouseMove);
+                piece1.onmouseup = null;
+            }
+            console.log($(piece1).position());
+        }
+
+        // remove default browser's drag listener
+        piece1.ondragstart = function() {
+            return false;
+        };
+        piece2.onmousedown = function(event) {
+            // calculate shift of drag point
+            let shiftX = event.clientX - piece2.getBoundingClientRect().left;
+            let shiftY = event.clientY - piece2.getBoundingClientRect().top;
+
+            // prepare to drag object
+            piece2.style.zIndex = 1000;
+
+            // set object under cursor
+            moveAt(event.pageX, event.pageY);
+
+            // move object on half width and half height for centering
+            function moveAt(pageX, pageY) {
+                piece2.style.left = pageX - shiftX + "px";
+                piece2.style.top = pageY - shiftY + "px";
+            }
+
+            function onMouseMove(event) {
+                moveAt(event.pageX, event.pageY);
+                if ( $(piece2).position().left < 220 
+                && $(piece2).position().left > 170
+                 && $(piece2).position().top < 330 
+                 && $(piece2).position().top > 280 ) {
+                    piece2.style.top = 74.31 + "vw";
+                    piece2.style.left = 47 + "vw";
+                    piece2.style.width = 39  + "vw";
+                    place2 = true;
+                    document.removeEventListener("mousemove", onMouseMove);
+                    // console.log (place2);
+                    // checkPlaces();
+
+            }
+            }
+
+            // drag on the screen by mouse
+            document.addEventListener("mousemove", onMouseMove);
+            // drop object and remove event listeners
+            piece2.onmouseup = function() {
+                checkPlaces();
+
+                document.removeEventListener("mousemove", onMouseMove);
+                piece2.onmouseup = null;
+            }
+            console.log($(piece2).position());
+        }
+
+        // remove default browser's drag listener
+        piece2.ondragstart = function() {
+            return false;
+        };
+        piece3.onmousedown = function(event) {
+            // calculate shift of drag point
+            let shiftX = event.clientX - piece3.getBoundingClientRect().left;
+            let shiftY = event.clientY - piece3.getBoundingClientRect().top;
+
+            // prepare to drag object
+            piece3.style.zIndex = 1000;
+
+            // set object under cursor
+            moveAt(event.pageX, event.pageY);
+
+            // move object on half width and half height for centering
+            function moveAt(pageX, pageY) {
+                piece3.style.left = pageX - shiftX + "px";
+                piece3.style.top = pageY - shiftY + "px";
+            }
+
+            function onMouseMove(event) {
+                moveAt(event.pageX, event.pageY);
+                if ( $(piece3).position().left < 130
+                && $(piece3).position().left > 80
+                 && $(piece3).position().top < 340 
+                 && $(piece3).position().top > 290 ) {
+                    piece3.style.top = 75.84 + "vw";
+                    piece3.style.left = 26.9 + "vw";
+                    piece3.style.width = 39  + "vw";
+                    place3 = true;
+                    document.removeEventListener("mousemove", onMouseMove);
+                    // console.log (place3);
+                    // checkPlaces();
+
+            }
+            }
+
+            // drag on the screen by mouse
+            document.addEventListener("mousemove", onMouseMove);
+            // drop object and remove event listeners
+            piece3.onmouseup = function() {
+                checkPlaces();
+
+                document.removeEventListener("mousemove", onMouseMove);
+                piece3.onmouseup = null;
+            }
+            console.log($(piece3).position());
+        }
+
+        // remove default browser's drag listener
+        piece3.ondragstart = function() {
+            return false;
+        };
+        piece4.onmousedown = function(event) {
+            // calculate shift of drag point
+            let shiftX = event.clientX - piece4.getBoundingClientRect().left;
+            let shiftY = event.clientY - piece4.getBoundingClientRect().top;
+
+            // prepare to drag object
+            piece4.style.zIndex = 1000;
+
+            // set object under cursor
+            moveAt(event.pageX, event.pageY);
+
+            // move object on half width and half height for centering
+            function moveAt(pageX, pageY) {
+                piece4.style.left = pageX - shiftX + "px";
+                piece4.style.top = pageY - shiftY + "px";
+            }
+
+            function onMouseMove(event) {
+                moveAt(event.pageX, event.pageY);
+                if ( $(piece4).position().left < 80 
+                && $(piece4).position().left > 30
+                 && $(piece4).position().top < 310 
+                 && $(piece4).position().top > 260 ) {
+                    piece4.style.top = 69.54 + "vw";
+                    piece4.style.left = 14.13 + "vw";
+                    piece4.style.width = 39  + "vw";
+                    place4 = true;
+                    document.removeEventListener("mousemove", onMouseMove);
+                    // console.log (place4);
+                    // checkPlaces();
+
+            }
+            }
+
+            // drag on the screen by mouse
+            document.addEventListener("mousemove", onMouseMove);
+            // drop object and remove event listeners
+            piece4.onmouseup = function() {
+                checkPlaces();
+
+                document.removeEventListener("mousemove", onMouseMove);
+                piece4.onmouseup = null;
+            }
+            console.log($(piece4).position());
+        }
+
+        // remove default browser's drag listener
+        piece4.ondragstart = function() {
+            return false;
+        };
+        piece5.onmousedown = function(event) {
+            // calculate shift of drag point
+            let shiftX = event.clientX - piece5.getBoundingClientRect().left;
+            let shiftY = event.clientY - piece5.getBoundingClientRect().top;
+
+            // prepare to drag object
+            piece5.style.zIndex = 1000;
+
+            // set object under cursor
+            moveAt(event.pageX, event.pageY);
+
+            // move object on half width and half height for centering
+            function moveAt(pageX, pageY) {
+                piece5.style.left = pageX - shiftX + "px";
+                piece5.style.top = pageY - shiftY + "px";
+            }
+
+            function onMouseMove(event) {
+                moveAt(event.pageX, event.pageY);
+                if ( $(piece5).position().left < 90 
+                && $(piece5).position().left > 40
+                 && $(piece5).position().top < 220 
+                 && $(piece5).position().top > 170 ) {
+                    piece5.style.top = 46.12 + "vw";
+                    piece5.style.left = 15.1 + "vw";
+                    piece5.style.width = 39  + "vw";
+                    place5 = true;
+                    document.removeEventListener("mousemove", onMouseMove);
+                    // console.log (place5);
+                    // checkPlaces();
+
+            }
+            }
+
+            // drag on the screen by mouse
+            document.addEventListener("mousemove", onMouseMove);
+            // drop object and remove event listeners
+            piece5.onmouseup = function() {
+                checkPlaces();
+
+                document.removeEventListener("mousemove", onMouseMove);
+                piece5.onmouseup = null;
+            }
+            console.log($(piece5).position());
+        }
+
+        // remove default browser's drag listener
+        piece5.ondragstart = function() {
+            return false;
+        };
+        
+        
+        </script>
+        <script>$('.piece0').draggable();</script>
+        <script>$('.piece1').draggable();</script>
+        <script>$('.piece2').draggable();</script>
+        <script>$('.piece3').draggable();</script>
+        <script>$('.piece4').draggable();</script>
+        <script>$('.piece5').draggable();</script>
+</body>
+</html>
